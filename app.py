@@ -107,6 +107,17 @@ def my_page():
     else:
         return redirect("/login")
 
+@app.route('/search', methods=["POST"])
+def search():
+    conn = sqlite3.connect('service.db')
+    c = conn.cursor()
+    c.execute("select title from items where title = %?%", (user_id,))
+    user_info = c.fetchone()
+    c.execute("select comment, from items where book_id = ? order by year", (user_id,))
+    book_overview = c.fetchone
+    book_overview = []
+    for row in c.fetchall():
+            book_overview.append({"title": row[0], "year": row[1], "comment": row[2]})
 
 @app.route('/add', methods=["POST"])
 def add():
