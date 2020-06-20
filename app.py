@@ -74,7 +74,7 @@ def login():
             return render_template("login.html")
         else:
             session['user_id'] = user_id[0]
-            return redirect("/bbs")
+            return redirect("/my_page")
 
 
 @app.route("/logout")
