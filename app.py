@@ -30,7 +30,7 @@ def register():
     #  登録ページを表示させる
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect ('/bbs')
+            return redirect ('/my_page')
         else:
             return render_template("register.html")
     # ここからPOSTの処理
