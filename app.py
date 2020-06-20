@@ -84,8 +84,8 @@ def logout():
     return redirect("/login")
 
 
-@app.route('/bbs')
-def bbs():
+@app.route('/my_page')
+def my_page():
     if 'user_id' in session :
         # クッキーからuser_idを取得
         user_id = session['user_id']
@@ -178,7 +178,7 @@ def del_task():
     c.execute("update set bbs del_flag = 1 where id = ?", (id,))
     conn.commit()
     c.close()
-    return redirect("/bbs")
+    return redirect("/my_page")
 
 
 @app.errorhandler(403)
