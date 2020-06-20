@@ -111,7 +111,7 @@ def my_page():
 def search():
     conn = sqlite3.connect('service.db')
     c = conn.cursor()
-    c.execute("select title from items where title = %?%", (user_id,))
+    c.execute("select title from items where title like '%?%'", (user_id,))
     user_info = c.fetchone()
     c.execute("select comment, from items where book_id = ? order by year", (user_id,))
     book_overview = c.fetchone
