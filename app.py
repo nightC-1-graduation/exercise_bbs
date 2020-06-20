@@ -52,19 +52,19 @@ def register():
 def login():
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect("/bbs")
+            return redirect("/my_page")
         else:
             return render_template("login.html")
     else:
         # ブラウザから送られてきたデータを受け取る
-        name = request.form.get("name")
+        name = request.form.get("user_name")
         password = request.form.get("password")
 
         # ブラウザから送られてきた name ,password を userテーブルに一致するレコードが
         # 存在するかを判定する。レコードが存在するとuser_idに整数が代入、存在しなければ nullが入る
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("select id from user where name = ? and password = ?", (name, password) )
+        c.execute("select user_name from users where name = ? and password = ?", (name, password) )
         user_id = c.fetchone()
         conn.close()
 
