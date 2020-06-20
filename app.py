@@ -40,7 +40,7 @@ def register():
 
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("insert into user values(null,?,?)", (name,password))
+        c.execute("insert into user values(null,?,?,?,?,?,?,?,?)", (user_name,user_name_kana,address,phone,mail,password,plan))
         conn.commit()
         conn.close()
         return redirect('/login')
