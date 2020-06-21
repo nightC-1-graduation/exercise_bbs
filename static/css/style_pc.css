@@ -1,194 +1,364 @@
 @charset "UTF-8";
-html {
-	overflow-y: scroll; /* IEへの対応 http://www.htmq.com/style/overflow-y.shtml */
-	/*Internet Explorerが独自に追加したプロパティ*/
-	/*画面に収まりきれなかったときにスクロールして表示することを許可するか否か*/
+@import url('https://fonts.googleapis.com/css?family=Sacramento');
+html{
+    background-color:#1A1818;
+    color:black;
+    padding:0;
+    margin:0;
+    text-decoration:none;
+    list-style:none;
+    font-family: 'Sacramento', cursive;
 }
-/* リセットおまじない--------------------------------- */
+body{
+    margin:0;
+}
+/* ------------------------ section-title ------------*/
+.section-title{
+    color:white;
+    padding-top:30px;
+    text-align:left;
+}
 
-body, h1, h2, h3, h4, h5, p, ul, ol, li, dl, dt, dd {
-	margin: 0px;
-	padding: 0px;
+/* ------------------------- header ------------------*/
+.header{
+    width:100%;
+    height:64px;
+    background-color:rgba(26,24,24,0.5);
+    display:flex;
+    position:fixed;
+    z-index:100;
 }
-body {
-	background: #fff;
-	text-align: center;
-	font-size: 16px;
-	line-height: 1.4;
-	min-width: 100%;
-	-webkit-text-size-adjust: 100%;
+.header p{
+    font-size:40px;
+    color:white;
+    position:absolute;
+    left:12px;
+    margin:0;
 }
-li {
-	list-style: none;
+.header img{
+    width:64px;
+    height:64px;
+    position:absolute;
+    right:0px;
+}
+.header img:hover{
+    cursor:pointer;
+}
+/* --------------------- humburger ---------------------- */
+*, *:before, *:after {
+ padding: 0;
+ margin: 0;
+ box-sizing: border-box;
+}
+ol, ul {
+ list-style: none;
 }
 a {
-	outline: none;
-	color: inherit;
-	text-decoration: none;
+ text-decoration: none;
+ color: inherit;
 }
-img {
-	border: 0px;
-	vertical-align: bottom;
+.cp_cont {
+ height:100px;
 }
-/* --------------------------------------------------- */
-
-body {
-	font-family: "Noto Sans Japanese", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, "メイリオ", "Meiryo", "HGPｺﾞｼｯｸM", "Osaka", "ＭＳ Ｐゴシック", sans-serif, Century Gothic, Arial;
+.cp_offcm01 {
+ position: absolute;
+ top: 0px;
+ right: 0px;
+ display: inline-block;
 }
-
-
-/*ドロワー用でコメントアウト or 削除*/
-
-/*header {
-	height: 60px;
-	background: #eeeaec;
-	text-align: center;
-	position: fixed;
-	width: 100%;
-	z-index: 10;
+/* menu */
+.cp_offcm01 .cp_menu {
+ position: fixed;
+ top: 0;
+ right: -100vw;
+ width: 250px;
+ height: 80%;
+ cursor: pointer;
+ -webkit-transition-timing-function: cubic-bezier(.38,.52,.23,.99);
+    transition-timing-function: cubic-bezier(.38,.52,.23,.99);
+ background-color: white;
+    opacity: 0.5;
+    text-align:center;
 }
-header ul {
-	width: 900px;
-	margin: 0 auto;
-	display: flex;
+.cp_offcm01 .cp_menu ul {
+ margin: 0;
+ padding: 0;
 }
-header li {
-	color: #acacac;
-	width: 20%;
-	line-height: 60px;
-	transition: 0.2s;  メニューをホバーした時の変化時間
+.cp_offcm01 .cp_menu li {
+ list-style: none;
 }
-
-header li:hover{
-	メニューをホバーしたときに色が変わる
-	color:#111;
-}*/
-section {
-	text-align: center;
-	padding: 100px 0;
-}
-section h1 {
-	font-size: 40px;
-	line-height: 50px;
-	margin: 0 0 80px 0;
-	font-weight: 200;
-}
-.box {
-	max-width: 1200px;
-	margin: 0 auto;
-}
-#sec1 {
-	background: url(../img/photo_01.png) no-repeat center center;
-	height: 400px;
-	background-size: cover;
-}
-#sec1 h1 {
-	font-size: 55px;
-	color: #fff;
-	padding: 200px 0 0 0;
-}
-#sec1 h1 br {
-	display: none;
-	/* スマートフォンとPCでは画面幅が違うので、PC用のレイアウトでいれた改行が */
-	/* スマートフォン用のレイアウトできれいに改行されるとは限らないので none で消す */
-}
-#sec2 .flex_area {
-	display: flex;
-	flex-wrap: wrap;
+.cp_offcm01 .cp_menu li a {
+ display: block;
+ padding: 20px;
+ text-decoration: none;
+ color: black;
+    border-bottom: 1px solid black;
+    font-size:1.7rem;
 }
 
-#sec2 .flex_area div h2 {
-	font-size: 20px;
-	margin: 0 0 20px 0;
+.cp_offcm01 #cp_toggle01 {
+ position: absolute;
+ display: none;
+ opacity: 0;
 }
-#sec2 .flex_area div p {
-	font-size: 14px;
-	line-height: 1.8;
-	margin-bottom: 14px;
+.cp_offcm01 #cp_toggle01:checked ~ .cp_menu {
+ -webkit-transform: translateX(-100vw);
+    transform: translateX(-100vw);
+    margin-top:64px;
 }
-
-#sec3 {
-	background: url(../img/photo_02.png) no-repeat center center;
-	background-size: cover;
-	color: #fff;
-	background-attachment: fixed;
+/* menu toggle */
+.cp_offcm01 #cp_toggle01 ~ label {
+ display: block;
+ padding: 0;
+ cursor: pointer;
+ text-align: center;
+ color: #333333;
 }
-#sec3 p {
-	font-size: 16px;
-	line-height: 2;
-	margin-bottom: 16px;
+.cp_offcm01 #cp_toggle01 ~ label::before {
+ font-family: 'FontAwesome';
+ font-size: 2em
 }
-#sec4 p {
-	font-size: 15px;
-	line-height: 2;
-	margin-bottom: 15px;
+/* contents */
+.cp_contents {
+ color: #333333;
+    padding-left:30px;
+    font-size:1.3rem;
+    width:96%;
+    height:64px;
+    background-color:black;
+    opacity:0.7;
+    color:white;
 }
-
-#sec4 .port .portfolio {
-	width: 90%;
-	margin: 40px auto;
-	text-align: left;
-	display: flex;
-}
-
-#sec4 .port .portfolio img {
-	width: 100%;
-}
-
-#sec4 .port .portfolio p {
-	font-size: 14px;
-	margin: 5px 0;
+.cp_offcm01,.cp_contents{
+    position:fixed;
+    z-index:200;
 }
 
-#sec4 .port .portfolio p.port_title{
-	text-align: center;
-	font-size: 18px;
+/* -------------------------- eyecatch -----------------*/
+.eyecatch{
+    background-image:url(../images/IMG_5309.jpg);
+    background-size:cover;
+    width:100%;
+    height:650px;
+    position:relative;
 }
-
-footer {
-	height: 80px;
-	background: #eeeaec;
-}
-footer .copyright {
-	color: #acacac;
-	font-size: 12px;
-	padding-top: 30px;
-	letter-spacing: 1px;
-}
-
-#sec2 .flex_area .flex_area_padding{
-	padding: 20px;
-	width: 30%;
-}
-
-#sec4 .port p.port_margin{
-	margin-top:100px;
-	margin-left: 60px;
-	margin-right:60px;
-}
-
-.bbs_content{
-	border-bottom:1px solid #111;
-	width:60%;
-	margin:30px auto 0;
-}
-
-#attention{
-	color: red;
-	font-weight: bold;
-	display: none;
+.eyecatch-title{
+    color:white;
+    font-size:50px;
+    position:absolute;
+    bottom:5%;
+    right:10%;   
 }
 
 
 
-
-
-
-/* こちらは現在使われておりません */
-/* .bg-red {
-  background: red;
+/* ------------------------ top-btn -------------------- */
+.top-btn{
+    background-color:white;
+    width:50px;
+    height:50px;
+    position:absolute;
+    right:5%;
+    bottom:10px;
+    color:black;
+    font-size:30px;
+    font-weight:bold;
+    position:fixed;
+    z-index:100;
+}
+.top-btn p{
+    margin:0 auto;
+    text-align:center;
+    border:1 solid black;
+}
+.top-btn:hover{
+    cursor:pointer;
 }
 
-.bg-blue {
-	background: blue;
-} */
+/* ------------------------- search -------------------*/
+.search{
+    position:absolute;
+    top:35%;
+    left:30%;
+    background-color:transparent;
+    border-radius:60px;
+    width:50%;
+    height:70px;
+    display:flex;
+    text-align:center;
+    color:white;
+}
+.search p{
+    padding-top:15px;
+    padding-left:10px;
+    padding-right:15px;
+    font-size:5rem;
+}
+
+/* -------------------------- main ---------------------*/
+.item-img{
+    width:200px;
+    height:200px;
+    box-sizing:border-box;
+
+}
+.main-list{
+    display: table;
+    text-align:center;
+}
+.list-items{
+    display:inline-block;
+    position:relative;
+    margin-left:30px;
+    margin-top:30px;
+    border:1px solid white;
+    text-align:center;
+}
+.item-message{
+    width:200px;
+    height:35px;
+    align-items: stretch;
+    background-color:rgba(26,24,24,0.5);
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    opacity:0;
+}
+.list-items:hover .item-message{
+    opacity:1;
+}
+.list-items:hover{
+    cursor:pointer;
+}
+.item-message p{
+    color:white;
+    padding-left:5px;
+    font-size:10px;
+    display:inline;
+    padding-top:10px;
+}
+.item-message img{
+    display:inline;
+    vertical-align: middle;
+}
+.fast-img{
+    margin-left:0;
+}
+.hurt{
+    width:50%;
+    height:100%;
+    display:inline-block;
+    border-left:1px solid white;
+}
+.hurt p{
+    margin-top:30px;
+}
+.hurt img{
+    margin-top:3px;
+}
+
+
+
+/* ---------------------- more ------------------- */
+.more{
+    color:white;
+    font-size:40px;
+    margin:0 auto;
+    margin-top:100px;
+    margin-bottom:50px;
+}
+.more p{
+    margin:0 auto;
+    width:20%;
+    height:70px;
+    text-align:center;
+    background-color:green;
+    border-radius:60px;
+}
+.more p:hover{
+    cursor:pointer;
+}
+hr{
+    border-bottom:1px solid white;
+    margin-top:10px;
+}
+
+/* ---------------- singlepage --------------------- */
+.singlepage{
+    width:100%;
+    height:1000px;
+ }
+ .single-image{
+    width: 50%;
+    height:400px;
+    background-color:red;
+    margin:0 auto;
+    margin-top:50px;
+ }
+ .singlepage-share{
+    background-color:blue;
+    width:50%;
+    height:70px;
+    margin:0 auto;
+    color:white;
+    text-align:center;
+    font-size:4rem;
+    margin-top:70px;
+ }
+ .textinfo{
+    width:50%;
+    height:150px;
+    color:white;
+    background-color:green;
+    font-size:1.7rem;
+    margin:0 auto;
+    margin-top:20px;
+ }
+ .hosoku{
+    width:50%;
+    height:70px;
+    color:white;
+    background-color:pink;
+    font-size:1.3rem;
+    margin:0 auto;
+    margin-top:20px;
+ }
+ .category{
+    width:50%;
+    height:70px;
+    background-color:orange;
+    margin:0 auto;
+    display:flex;
+    margin-top:20px;
+ }
+ .category-item{
+    width:25%;
+    height:70px;
+    background-color:skyblue;
+    border:1px solid black;
+    text-align:center;
+    font-size:2.5rem;
+ }
+ .single-title{
+    width:50%;
+    height:50px;
+    background-color:red;
+    color:white;
+    margin:0 auto;
+    font-size:1.5rem;
+ }
+ .today-category{
+    width:50%;
+    height:300px;
+    background-color:blue;
+    margin:0 auto;
+    margin-top:20px;
+    display:flex;
+ }
+ .today-category-item{
+    width:33%;
+    height:300px;
+    background-color:pink;
+    border:1px solid black;
+ }
+ 
