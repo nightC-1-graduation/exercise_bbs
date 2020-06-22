@@ -1,9 +1,11 @@
 # splite3をimportする
 import sqlite3
 # flaskをimportしてflaskを使えるようにする
-from flask import Flask , render_template , request , redirect , session
+from flask import Flask , render_template , request , redirect , session , abort
 # appにFlaskを定義して使えるようにしています。Flask クラスのインスタンスを作って、 app という変数に代入しています。
 import datetime
+import json
+import requests
 
 dt_now = datetime.datetime.now()
 
@@ -190,6 +192,81 @@ def del_task():
     conn.commit()
     c.close()
     return redirect("/my_page")
+
+
+@app.route('/bookdb', methods=["POST"])
+def bookdb():
+    # フォームから入力されたアイテム名の取得
+    comment = request.form.get("bookRegist")
+    conn = sqlite3.connect('bookshare.db')
+    c = conn.cursor()
+    # DBにデータを追加する
+    c.execute("insert into items values(null,?,?,?,?,?,?,?)", (title, author, year, synopsis, book_photo, pages, isbn))
+    conn.commit()
+    conn.close()
+    return redirect('/bookdb')
+
+
+    # url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'
+    # # ブラウザから送られてきたISBNデータを受け取る
+    # isbn = request.form.get("isbn")
+    # req_url = url + isbn
+    # res = requests.get(req_url)
+    # return '登録できないよ'
+    # # response.text
+    # WebAPIのURLに引数文字列を追加
+    # url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + '9784893096609'
+    # WebAPIの呼び出し
+    # res = requests.get('https://www.googleapis.com/books/v1/volumes?q=isbn:9784893096609')
+
+    # title = res.items[0].volumeInfo.title
+    # author = res.items[0].volumeInfo.authors[0]
+    # year = res.items[0].volumeInfo.publishedDate
+    # synopsis = res.items[0].volumeInfo.description
+    # book_photo = res.items[0].volumeInfo.imageLinks.smallThumbnail
+    # pages = res.items[0].volumeInfo.pageCount
+    # isbn = res.items[0].volumeInfo.industryIdentifiers[1].identifier
+    # genre = res.items[0].volumeInfo.categories
+
+    # DBにデータを追加する
+    # conn = sqlite3.connect('bookshare.db')
+    # c = conn.cursor()
+    # c.execute("insert into items values(null,?,?,?,?,?,?,?,?)", (title, author, year, synopsis, isbn, book_photo, genre, pages, ) )
+    # conn.commit()
+    # conn.close()
+    # return '登録できないよ'
+
+
+# 図書検索機能まだできてないよ
+# # GET  /search => 検索画面を表示
+# # POST /search => 検索処理をする
+# @app.route("/search", methods=["POST"])
+# def search():
+#     # ブラウザから送られてきた検索キーワードを受け取る
+#     name = request.form.get("keyword")
+
+#     # ブラウザから送られてきた keywordと itemsテーブルに一致するレコードが
+#     # 存在するかを判定する。レコードが存在したら
+#     # 本の情報を表示させたい
+#     conn = sqlite3.connect('bookshare.db')
+#     c = conn.cursor()
+#     # 検索キーワードが本のタイトルと部分一致したらカラム全部取り出してみる
+#     c.execute("select * from items where title like ?", ('%'+keyword+'%',) )
+
+#     # この下からはまだ
+#     # 
+
+#     user_id = c.fetchall()
+#     conn.close()
+#     # # DBから取得してきたuser_id、ここの時点ではタプル型
+#     # print(type(user_id))
+#     # # user_id が NULL(PythonではNone)じゃなければログイン成功
+#     # if user_id is None:
+    #     # ログイン失敗すると、ログイン画面に戻す
+    #     return render_template("login.html")
+    # else:
+    #     session['user_id'] = user_id[0]
+    #     return redirect("/bbs")
 
 
 @app.errorhandler(403)
