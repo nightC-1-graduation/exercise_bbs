@@ -240,7 +240,7 @@ def bookdb():
 # 図書検索機能まだできてないよ
 # # GET  /search => 検索画面を表示
 # # POST /search => 検索処理をする
-# @app.route("/search", methods=["POST"])
+# @app.route("/titlesearch", methods=["POST"])
 # def search():
 #     # ブラウザから送られてきた検索キーワードを受け取る
 #     name = request.form.get("keyword")
