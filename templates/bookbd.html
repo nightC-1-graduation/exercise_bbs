@@ -34,8 +34,8 @@
         const isbn = res.items[0].volumeInfo.industryIdentifiers[1].identifier;
         parent.append('／ISBN番号：' + isbn);
         var bookdata = [title, author, year, synopsis, book_photo, pages, isbn];
-        console.log(bookdata);
-        // return bookdata;
+        // console.log(bookdata);
+        return bookdata;
 
       }).catch(function (error) {
          parent.append(error);
