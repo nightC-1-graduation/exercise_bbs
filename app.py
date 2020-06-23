@@ -30,17 +30,21 @@ def register():
     #  登録ページを表示させる
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect ('/my_page')
+            return redirect ("index.html")
         else:
             return render_template("register.html")
     # ここからPOSTの処理
     else:
-        name = request.form.get("name")
+        user_name = request.form.get("user_name")
         password = request.form.get("password")
+        address = request.form.get("address")
+        phone = request.form.get("phone")
+        mail = request.form.get("mail")
+        plan = request.form.get("plan")
 
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
-        c.execute("insert into user values(null,?,?,?,?,?,?,?,?)", (user_name,user_name_kana,address,phone,mail,password,plan))
+        c.execute("insert into users (user_id,user_name,address,phone,mail,password,plan) values(null,?,?,?,?,?,?)", ('user_name','address','phone','mail','password','plan'))
         conn.commit()
         conn.close()
         return redirect('/login')
@@ -52,7 +56,7 @@ def register():
 def login():
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect("/my_page")
+            return redirect("index.html")
         else:
             return render_template("login.html")
     else:
@@ -84,28 +88,29 @@ def logout():
     return redirect("/login")
 
 
-@app.route('/my_page')
-def my_page():
+@app.route("/")
+def index_page():
     if 'user_id' in session :
         # クッキーからuser_idを取得
         user_id = session['user_id']
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
         # # DBにアクセスしてログインしているユーザ名と投稿内容を取得する
         # クッキーから取得したuser_idを使用してuserテーブルのnameを取得
-        c.execute("select name from user where id = ?", (user_id,))
+        c.execute("select user_name from users where id = ?", (user_id,))
         # fetchoneはタプル型
         user_info = c.fetchone()
-        c.execute("select id,comment,dt_now from bbs where userid = ? and del_flag = 0 order by id", (user_id,))
-        comment_list = c.fetchone
-        comment_list = []
+        c.execute("select title, synopsis, book_photo from items where book_id = ?", (book_id,))
+        c.execute("")
+        book_list = c.fetchone
+        book_list = []
         for row in c.fetchall():
-            comment_list.append({"id": row[0], "comment": row[1], "dt_now": row[2]})
+            book_list.append({"title": row[0], "synopsis": row[1], "book_photo": row[2]})
 
         c.close()
-        return render_template('bbs.html' , user_info = user_info , comment_list = comment_list)
+        return render_template('index.html' , user_info = user_info , book_list = book_list)
     else:
-        return redirect("/login")
+        return redirect("login.html")
 
 @app.route('/search', methods=["POST"])
 def search():
@@ -138,21 +143,93 @@ def edit(id):
     if 'user_id' in session :
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("select comment from bbs where id = ?", (id,) )
+        c.execute("select user_name from users where user_id = ?", (user_id,) )
         comment = c.fetchone()
         conn.close()
 
-        if comment is not None:
+        if user_name is not None:
             # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
-            comment = comment[0]
+            user_name = user_name[0]
             # "りんご" ○   ("りんご",) ☓
             # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
         else:
             return "アイテムがありません" # 指定したIDの name がなければときの対処
 
-        item = { "id":id, "comment":comment }
+        item = { "user_id":user_id, "user_name":user_name }
 
-        return render_template("edit.html", comment=item)
+        return render_template("edit.html", user_name=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select address from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if address is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            address = address[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "address":address }
+
+        return render_template("edit.html", address=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select phone from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if phone is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            phone = phone[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "phone":phone }
+
+        return render_template("edit.html", phone=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select mail from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if mail is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            mail = mail[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "mail":mail }
+
+        return render_template("edit.html", mail=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select password from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if password is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            password = password[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "passwod":password }
+
+        return render_template("edit.html", password=password)
     else:
         return redirect("/login")
 
@@ -169,24 +246,24 @@ def update_item():
         # 既にあるデータベースのデータを送られてきたデータに更新
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("update bbs set comment = ? where id = ?",(comment,item_id))
+        c.execute("update users set user_name = ?, address = ?, phone =?, mail = ? where user_id = ?",(user_name,address,phone,mail,item_id))
         conn.commit()
         conn.close()
 
         # アイテム一覧へリダイレクトさせる
-        return redirect("/bbs")
+        return redirect("/my_page")
     else:
         return redirect("/login")
 
 
 @app.route('/del' ,methods=["POST"])
-def del_task():
+def del_user():
     # クッキーから user_id を取得
     id = request.form.get("comment_id")
     id = int(id)
     conn = sqlite3.connect("service.db")
     c = conn.cursor()
-    c.execute("update set bbs del_flag = 1 where id = ?", (id,))
+    c.execute("update set users user_delete= 1 where user_id = ?", (user_id,))
     conn.commit()
     c.close()
     return redirect("/my_page")
