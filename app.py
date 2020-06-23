@@ -35,17 +35,16 @@ def register():
             return render_template("register.html")
     # ここからPOSTの処理
     else:
-        user_name = request.form.get("user_name")
-        password = request.form.get("password")
-        address = request.form.get("address")
-        phone = request.form.get("phone")
-        mail = request.form.get("mail")
-        plan = request.form.get("plan")
+        name=request.form.get("name")
+        password=request.form.get("password")
+        address=request.form.get("address")
+        phone=request.form.get("phone")
+        mail=request.form.get("mail")
+        plan=request.form.get("plan")
 
-
-        conn = sqlite3.connect('bookshare.db')
+        conn = sqlite3.connect("bookshare.db")
         c = conn.cursor()
-        c.execute("insert into users (user_id,user_name,address,phone,mail,password,plan) values(null,?,?,?,?,?,?)", ('user_name','address','phone','mail','password','plan'))
+        c.execute("insert into users values(null, ?, ?, ?, ?, ?, ?)",(name, password, address, phone, mail, plan))
         conn.commit()
         conn.close()
         return redirect('/login')
@@ -53,23 +52,23 @@ def register():
 
 # GET  /login => ログイン画面を表示
 # POST /login => ログイン処理をする
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect("index.html")
+            return redirect('/index')
         else:
-            return render_template("login.html")
+            return render_template('/login')
     else:
         # ブラウザから送られてきたデータを受け取る
-        name = request.form.get("user_name")
-        password = request.form.get("password")
+        name=request.form.get("name")
+        password=request.form.get("password")
 
         # ブラウザから送られてきた name ,password を userテーブルに一致するレコードが
         # 存在するかを判定する。レコードが存在するとuser_idに整数が代入、存在しなければ nullが入る
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
-        c.execute("select user_name from users where name = ? and password = ?", (name, password) )
+        c.execute("select name from users where name = ? and password = ?", (name, password) )
         user_id = c.fetchone()
         conn.close()
 
@@ -79,7 +78,7 @@ def login():
             return render_template("login.html")
         else:
             session['user_id'] = user_id[0]
-            return redirect("/my_page")
+            return redirect("/")
 
 
 @app.route("/logout")
@@ -268,6 +267,31 @@ def del_user():
     conn.commit()
     c.close()
     return redirect("/my_page")
+
+@app.route('/cart', methods=["GET", "POST"])
+def cart():
+    #  登録ページを表示させる
+    if request.method == "GET":
+        if 'user_id' in session :
+            return render_template("cart.html")
+        else:
+            return render_template("login.html")
+    # ここからPOSTの処理
+    else:
+        name=request.form.get("name")
+        password=request.form.get("password")
+        address=request.form.get("address")
+        phone=request.form.get("phone")
+        mail=request.form.get("mail")
+        plan=request.form.get("plan")
+
+        conn = sqlite3.connect("bookshare.db")
+        c = conn.cursor()
+        c.execute("insert into users values(null, ?, ?, ?, ?, ?, ?)",(name, password, address, phone, mail, plan))
+        conn.commit()
+        conn.close()
+        return redirect('/cart')
+
 
 
 @app.errorhandler(403)

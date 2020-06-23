@@ -6,20 +6,20 @@
 
 <div>
 
-<form action="/register" method="post">
-  <input type="hidden" value="{{users['user_id']}}" name="user_id">
-  名前：<input type="text" value="{{users['user_name']}}" name="user_name"><br>
-  パスワード：<input type="password" value="{{users['password']}}" name="password"><br>
-  住所：<input type="text" value="{{users['address']}}" name="address"><br>
-  電話番号：<input type="tell" value="{{users['phone']}}" name="phone"><br>
-  メールアドレス：<input type="text" value="{{users['mail']}}" name="mail"><br>
-  プランの選択：<select name="name">
-    <option value="basic">basic</option>
-    <option value="standard">standard</option>
-    <option value="premium">premium</option>
-  </select>
-  <input type="submit" name="save" value="登録する">
-</form>
+  <form action="/register" method="POST">
+    <input type="hidden" name="user_id"><br>
+    名前：<input type="text" name="name"><br>
+    パスワード：<input type="password" name="password"><br>
+    住所：<input type="text" name="address"><br>
+    電話番号：<input type="text" name="phone"><br>
+    email address：<input type="text" name="mail"><br>
+    プランの選択：<select name="plan" id="">
+      <option value="basic">basic</option>
+      <option value="standard">standard</option>
+      <option value="premium">premium</option>
+    </select>
+    <input type="submit" name="save" value="登録">
+  </form>
 
 <a href="/login">登録されている方はこちら</a>
 
