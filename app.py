@@ -42,6 +42,7 @@ def register():
         mail = request.form.get("mail")
         plan = request.form.get("plan")
 
+
         conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
         c.execute("insert into users (user_id,user_name,address,phone,mail,password,plan) values(null,?,?,?,?,?,?)", ('user_name','address','phone','mail','password','plan'))
@@ -282,4 +283,4 @@ def notfound404(code):
 # __name__ というのは、自動的に定義される変数で、現在のファイル(モジュール)名が入ります。 ファイルをスクリプトとして直接実行した場合、 __name__ は __main__ になります。
 if __name__ == "__main__":
     # Flask が持っている開発用サーバーを、実行します。
-    app.run()
+    app.run(debug=True)
