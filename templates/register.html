@@ -7,7 +7,7 @@
 <div>
 
 <form action="/register" method="post">
-  <input type="hidden" value="null" name="user_id">
+  <input type="hidden" value="{{users['user_id']}}" name="user_id">
   名前：<input type="text" value="{{users['user_name']}}" name="user_name"><br>
   パスワード：<input type="password" value="{{users['password']}}" name="password"><br>
   住所：<input type="text" value="{{users['address']}}" name="address"><br>
