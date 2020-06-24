@@ -5,7 +5,6 @@ from flask import Flask , render_template , request , redirect , session , abort
 # appにFlaskを定義して使えるようにしています。Flask クラスのインスタンスを作って、 app という変数に代入しています。
 import datetime
 import json
-import requests
 import sys
 
 dt_now = datetime.datetime.now()
@@ -38,18 +37,16 @@ def register():
             return render_template("register.sentaro.html")
     # ここからPOSTの処理
     else:
-        name=request.form.get("user_name")
-        kana=request.form.get("user_name_kana")       
+        name=request.form.get("name")      
         password=request.form.get("password")
         address=request.form.get("address")
         phone=request.form.get("phone")
         mail=request.form.get("mail")
         plan=request.form.get("plan")
-        user_delete=0
 
         conn = sqlite3.connect("bookshare.db")
         c = conn.cursor()
-        c.execute("insert into users values(null,?,?,?,?,?,?,?,?)",(name,kana,address, phone, mail, password, user_delete, plan))
+        c.execute("insert into users values(null,?,?,?,?,?,?,?)",(name,address, phone, mail, password, plan))
         conn.commit()
         conn.close()
         return redirect('/login')
