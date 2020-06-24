@@ -47,9 +47,12 @@
  
        <div class="main-list">
            <div class="list-items fast-img">
-               <img class="item-img" src="/static/images/banana-4415864_1920.jpg" alt="item">
+               <img class="item-img" src="{{book_list[0]['book_photo']}}" alt="item">
                <div class="item-message">
-                   <p>textが入ります。</p>
+                   <p><form action="/del" method="POST">
+                        <input type="text" value="{{book_list[0]['book_photo']}}" name="book_photo">
+                        <input type="submit">
+                    </form></p>
                    <div class="hurt">
                        <img src="/static/images/icons8-ハート-48.png" alt="item-img" width="24px" height="24px">
                        <p>0</p>
@@ -57,7 +60,7 @@
                </div>
            </div>
            <div class="list-items">
-               <img class="item-img" src="/static/images/apple-1590131_1280.png" alt="item">
+               <img class="item-img" src="{{book_list[1]['book_photo']}}" alt="item">
                <div class="item-message">
                    <p>textが入ります。</p>
                    <div class="hurt">

@@ -1,9 +1,12 @@
 # splite3をimportする
 import sqlite3
 # flaskをimportしてflaskを使えるようにする
-from flask import Flask , render_template , request , redirect , session
+from flask import Flask , render_template , request , redirect , session , abort , Blueprint , jsonify
 # appにFlaskを定義して使えるようにしています。Flask クラスのインスタンスを作って、 app という変数に代入しています。
 import datetime
+import json
+import requests
+import sys
 
 dt_now = datetime.datetime.now()
 
@@ -35,16 +38,18 @@ def register():
             return render_template("register.sentaro.html")
     # ここからPOSTの処理
     else:
-        name=request.form.get("name")
+        name=request.form.get("user_name")
+        kana=request.form.get("user_name_kana")       
         password=request.form.get("password")
         address=request.form.get("address")
         phone=request.form.get("phone")
         mail=request.form.get("mail")
         plan=request.form.get("plan")
+        user_delete=0
 
         conn = sqlite3.connect("bookshare.db")
         c = conn.cursor()
-        c.execute("insert into users values(null, ?, ?, ?, ?, ?, ?)",(name, password, address, phone, mail, plan))
+        c.execute("insert into users values(null,?,?,?,?,?,?,?,?)",(name,kana,address, phone, mail, password, user_delete, plan))
         conn.commit()
         conn.close()
         return redirect('/login')
@@ -61,7 +66,7 @@ def login():
             return render_template('/login')
     else:
         # ブラウザから送られてきたデータを受け取る
-        name=request.form.get("name")
+        name=request.form.get("user_name")
         password=request.form.get("password")
 
         # ブラウザから送られてきた name ,password を userテーブルに一致するレコードが
@@ -81,7 +86,7 @@ def login():
             return redirect("/")
 
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
     session.pop('user_id',None)
     # ログアウト後はログインページにリダイレクトさせる
@@ -235,7 +240,7 @@ def edit(id):
 
 
 # /add ではPOSTを使ったので /edit ではあえてGETを使う
-@app.route("/edit")
+@app.route('/edit' ,methods=["GET"])
 def update_item():
     if 'user_id' in session :
         # ブラウザから送られてきたデータを取得
@@ -259,14 +264,69 @@ def update_item():
 @app.route('/del' ,methods=["POST"])
 def del_user():
     # クッキーから user_id を取得
-    id = request.form.get("comment_id")
-    id = int(id)
-    conn = sqlite3.connect("service.db")
+    book_photo = request.form.get("book_photo")
+    conn = sqlite3.connect("bookshare.db")
     c = conn.cursor()
-    c.execute("update set users user_delete= 1 where user_id = ?", (user_id,))
+    c.execute("update items set flag = 1 where book_photo = ?", (book_photo,))
     conn.commit()
     c.close()
-    return redirect("/my_page")
+    return redirect("/list")
+
+
+@app.route("/list")
+def task_list():
+    # ログインしている時
+    # if "user_id" in session:
+        # user_id = session["user_id"]
+        conn = sqlite3.connect("bookshare.db")
+        c = conn.cursor()
+
+
+        c.execute("select book_photo from items where flag = 0")
+        book_list = []
+        for row in c.fetchall():
+            # インデックス管理=>キーバリューで管理するためにデータの成形
+            book_list.append({"book_photo":row[0]})
+        conn.close()
+        return render_template("index.html", book_list = book_list)
+    # ログインしていない時
+    # else:
+    #     return redirect("/login")
+
+
+
+# これはOK
+# @app.route('/bookdb')
+# def bookdb():
+#     return render_template('bookdb.html')
+#
+@app.route('/bookdb',methods=["GET", "POST"])
+def bookdb():
+    if request.method == "GET":
+        return render_template('bookdb.html')
+    else:
+        recieve = sys.stdin.readline()
+        print(recieve)
+        return "bookdbのGET確認中"
+'''
+@app.route('/bookdb', methods=["GET", "POST"])
+def bookdb():
+    if request.method == "GET":
+        return render_template("bookdb.html")
+    else:
+    # フォームから入力されたアイテム名の取得
+        bookdata = request.form.get("bookdata")
+
+    # conn = sqlite3.connect('bookshare.db')
+    # c = conn.cursor()
+
+    # c.execute("insert into items values(null,?,?,?,?,?,?,?,?,null)", (bookdata[0],bookdata[1],bookdata[2],bookdata[3],bookdata[4],bookdata[5],bookdata[6],bookdata[7]))
+    # conn.commit()
+    # conn.close()
+        return '確認用'
+    # redirect('/bookdb')
+    '''
+
 
 @app.route('/cart', methods=["GET", "POST"])
 def cart():
@@ -307,4 +367,5 @@ def notfound404(code):
 # __name__ というのは、自動的に定義される変数で、現在のファイル(モジュール)名が入ります。 ファイルをスクリプトとして直接実行した場合、 __name__ は __main__ になります。
 if __name__ == "__main__":
     # Flask が持っている開発用サーバーを、実行します。
-    app.run(debug=True)
+    app.run(debug = True)
+  
