@@ -32,7 +32,7 @@ def register():
         if 'user_id' in session :
             return redirect ("index.html")
         else:
-            return render_template("register.html")
+            return render_template("register.sentaro.html")
     # ここからPOSTの処理
     else:
         name=request.form.get("name")
@@ -75,7 +75,7 @@ def login():
         # user_id が NULL(PythonではNone)じゃなければログイン成功
         if user_id is None:
             # ログイン失敗すると、ログイン画面に戻す
-            return render_template("login.html")
+            return render_template("login2.html")
         else:
             session['user_id'] = user_id[0]
             return redirect("/")

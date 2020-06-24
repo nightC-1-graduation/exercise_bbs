@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>sentaro</title>
+   <link rel="stylesheet" href="/exercise_bbs/static/css/stylesheet.css">
+</head>
+ 
+<body>
+  
+</body>
+<form action="/register" method="post">
+   <div class="akaunto-sentaro">
+       <p>アカウント名</p>
+       <input type="text">
+   </div>
+   <div class="akaunto-sentaro">
+       <p>パスワード</p>
+       <input type="password" name="password">
+   </div>
+   <div class="akaunto-sentaro">
+       <p>住所</p>
+       <input type="text" name="address">
+   </div>
+   <div class="akaunto-sentaro">
+       <p>電話番号</p>
+       <input type="text" name="phone">
+   </div>
+    <div class="akaunto-sentaro">
+       <p>メールアドレス</p>
+       <input type="text" name="mail">
+   </div>
+    <div class="akaunto-sentaro">
+       <p>プランの選択</p>
+       <select name="plan" id="">
+        <option value="basic">basic</option>
+        <option value="standard">standard</option>
+        <option value="premium">premium</option>
+      </select>
+      <input type="submit" name="save" value="登録">
+   </div>
+</form>
+
+   <div class="more">
+       <p>sentaro see→</p>
+   </div>
+</html>
+
+{% endblock %}
