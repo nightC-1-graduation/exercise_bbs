@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <div>
+    <p>登録する本のISBNコードを入力</p><input id="isbn" type="text"> <button id="button" onclick="searchBook()">書籍検索</button>
+    <div id="bookinfo"></div>
+
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script type="text/javascript">
+  'use strict'
+
+  function searchBook() { 
+    const code = document.getElementById('isbn').value;
+    const parent = document.getElementById('bookinfo');
+    parent.textContent = null;
+
+    fetch('https://www.googleapis.com/books/v1/volumes?q=isbn:' + code)
+      .then(response =>  {
+        return response.json();
+      }).then( res => {
+        const title = res.items[0].volumeInfo.title;
+        parent.append('書籍名：' + title);
+        const author = res.items[0].volumeInfo.authors[0];
+        parent.append('／著者：' + author);
+        const year = res.items[0].volumeInfo.publishedDate;
+        parent.append('／出版年月：' + year);
+        const synopsis = res.items[0].volumeInfo.description;
+        parent.append('／概要：' + synopsis);
+        const isbn = res.items[0].volumeInfo.industryIdentifiers[1].identifier;
+        parent.append('／ISBN番号：' + isbn);
+        const book_photo = res.items[0].volumeInfo.imageLinks.smallThumbnail;
+        parent.append('／表紙：' + book_photo);
+        const genre = res.items[0].volumeInfo.categories;
+        parent.append('／カテゴリー（ジャンル）：' + genre);
+        const pages = res.items[0].volumeInfo.pageCount;
+        parent.append('／ページ数：' + pages);
+
+        var bookdata = [title, author, year, synopsis, isbn, book_photo, genre, pages];
+        console.log(bookdata);
+
+        // ホントは登録確認ボタン押したら処理したい
+        $.ajax({
+          url: '/bookdb',
+          type: 'POST',
+          data: bookdata,    // { bookdata: [title, author, year, synopsis, isbn, book_photo, genre, pages] }
+        }).done(function(data){
+          console.log(data);
+        });
+      }).catch(function (error) {
+        parent.append(error);
+      });
+  }
+//   function BookRegist() {
+//     if( confirm("登録しますか？") ) {
+
+//       // $.ajax({
+//       //   url: '/bookdb',
+//       //   type: 'POST',
+//       //   data: bookdata,    // { bookdata: [title, author, year, synopsis, isbn, book_photo, genre, pages] }
+//       // }).done(function(data){
+//       //   console.log(data);
+//       // });
+//     }
+//     else {
+//         alert("登録しませんでした");
+//     }
+// }
+  </script>
+
+  <!-- 確認ダイアログ -->
+  <input type="button" value="登録しますか？" onclick="BookRegist();">
+
+  {% endblock %}

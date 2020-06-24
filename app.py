@@ -1,11 +1,12 @@
 # splite3をimportする
 import sqlite3
 # flaskをimportしてflaskを使えるようにする
-from flask import Flask , render_template , request , redirect , session , abort
+from flask import Flask , render_template , request , redirect , session , abort , Blueprint , jsonify
 # appにFlaskを定義して使えるようにしています。Flask クラスのインスタンスを作って、 app という変数に代入しています。
 import datetime
 import json
 import requests
+import sys
 
 dt_now = datetime.datetime.now()
 
@@ -79,7 +80,7 @@ def login():
             return redirect("/my_page")
 
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
     session.pop('user_id',None)
     # ログアウト後はログインページにリダイレクトさせる
@@ -160,7 +161,7 @@ def edit(id):
 
 
 # /add ではPOSTを使ったので /edit ではあえてGETを使う
-@app.route("/edit")
+@app.route('/edit' ,methods=["GET"])
 def update_item():
     if 'user_id' in session :
         # ブラウザから送られてきたデータを取得
@@ -193,18 +194,37 @@ def del_task():
     c.close()
     return redirect("/my_page")
 
-
-@app.route('/bookdb', methods=["POST"])
+# これはOK
+# @app.route('/bookdb')
+# def bookdb():
+#     return render_template('bookdb.html')
+#
+@app.route('/bookdb',methods=["GET", "POST"])
 def bookdb():
+    if request.method == "GET":
+        return render_template('bookdb.html')
+    else:
+        recieve = sys.stdin.readline()
+        print(recieve)
+        return "bookdbのGET確認中"
+'''
+@app.route('/bookdb', methods=["GET", "POST"])
+def bookdb():
+    if request.method == "GET":
+        return render_template("bookdb.html")
+    else:
     # フォームから入力されたアイテム名の取得
-    comment = request.form.get("bookRegist")
-    conn = sqlite3.connect('bookshare.db')
-    c = conn.cursor()
-    # DBにデータを追加する
-    c.execute("insert into items values(null,?,?,?,?,?,?,?)", (title, author, year, synopsis, book_photo, pages, isbn))
-    conn.commit()
-    conn.close()
-    return redirect('/bookdb')
+        bookdata = request.form.get("bookdata")
+
+    # conn = sqlite3.connect('bookshare.db')
+    # c = conn.cursor()
+
+    # c.execute("insert into items values(null,?,?,?,?,?,?,?,?,null)", (bookdata[0],bookdata[1],bookdata[2],bookdata[3],bookdata[4],bookdata[5],bookdata[6],bookdata[7]))
+    # conn.commit()
+    # conn.close()
+        return '確認用'
+    # redirect('/bookdb')
+    '''
 
 
     # url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'
@@ -282,4 +302,4 @@ def notfound404(code):
 # __name__ というのは、自動的に定義される変数で、現在のファイル(モジュール)名が入ります。 ファイルをスクリプトとして直接実行した場合、 __name__ は __main__ になります。
 if __name__ == "__main__":
     # Flask が持っている開発用サーバーを、実行します。
-    app.run()
+    app.run(debug = True)
