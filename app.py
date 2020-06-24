@@ -33,17 +33,23 @@ def register():
     #  登録ページを表示させる
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect ('/my_page')
+            return redirect ("index.html")
         else:
             return render_template("register.html")
     # ここからPOSTの処理
     else:
-        name = request.form.get("name")
-        password = request.form.get("password")
+        name=request.form.get("user_name")
+        kana=request.form.get("user_name_kana")       
+        password=request.form.get("password")
+        address=request.form.get("address")
+        phone=request.form.get("phone")
+        mail=request.form.get("mail")
+        plan=request.form.get("plan")
+        user_delete=0
 
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect("bookshare.db")
         c = conn.cursor()
-        c.execute("insert into user values(null,?,?,?,?,?,?,?,?)", (user_name,user_name_kana,address,phone,mail,password,plan))
+        c.execute("insert into users values(null,?,?,?,?,?,?,?,?)",(name,kana,address, phone, mail, password, user_delete, plan))
         conn.commit()
         conn.close()
         return redirect('/login')
@@ -51,23 +57,23 @@ def register():
 
 # GET  /login => ログイン画面を表示
 # POST /login => ログイン処理をする
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         if 'user_id' in session :
-            return redirect("/my_page")
+            return redirect('/index')
         else:
-            return render_template("login.html")
+            return render_template('/login')
     else:
         # ブラウザから送られてきたデータを受け取る
-        name = request.form.get("user_name")
-        password = request.form.get("password")
+        name=request.form.get("user_name")
+        password=request.form.get("password")
 
         # ブラウザから送られてきた name ,password を userテーブルに一致するレコードが
         # 存在するかを判定する。レコードが存在するとuser_idに整数が代入、存在しなければ nullが入る
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
-        c.execute("select user_name from users where name = ? and password = ?", (name, password) )
+        c.execute("select name from users where name = ? and password = ?", (name, password) )
         user_id = c.fetchone()
         conn.close()
 
@@ -77,7 +83,7 @@ def login():
             return render_template("login.html")
         else:
             session['user_id'] = user_id[0]
-            return redirect("/my_page")
+            return redirect("/")
 
 
 @app.route('/logout')
@@ -87,28 +93,29 @@ def logout():
     return redirect("/login")
 
 
-@app.route('/my_page')
-def my_page():
+@app.route("/")
+def index_page():
     if 'user_id' in session :
         # クッキーからuser_idを取得
         user_id = session['user_id']
-        conn = sqlite3.connect('service.db')
+        conn = sqlite3.connect('bookshare.db')
         c = conn.cursor()
         # # DBにアクセスしてログインしているユーザ名と投稿内容を取得する
         # クッキーから取得したuser_idを使用してuserテーブルのnameを取得
-        c.execute("select name from user where id = ?", (user_id,))
+        c.execute("select user_name from users where id = ?", (user_id,))
         # fetchoneはタプル型
         user_info = c.fetchone()
-        c.execute("select id,comment,dt_now from bbs where userid = ? and del_flag = 0 order by id", (user_id,))
-        comment_list = c.fetchone
-        comment_list = []
+        c.execute("select title, synopsis, book_photo from items where book_id = ?", (book_id,))
+        c.execute("")
+        book_list = c.fetchone
+        book_list = []
         for row in c.fetchall():
-            comment_list.append({"id": row[0], "comment": row[1], "dt_now": row[2]})
+            book_list.append({"title": row[0], "synopsis": row[1], "book_photo": row[2]})
 
         c.close()
-        return render_template('bbs.html' , user_info = user_info , comment_list = comment_list)
+        return render_template('index.html' , user_info = user_info , book_list = book_list)
     else:
-        return redirect("/login")
+        return redirect("login.html")
 
 @app.route('/search', methods=["POST"])
 def search():
@@ -141,21 +148,93 @@ def edit(id):
     if 'user_id' in session :
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("select comment from bbs where id = ?", (id,) )
+        c.execute("select user_name from users where user_id = ?", (user_id,) )
         comment = c.fetchone()
         conn.close()
 
-        if comment is not None:
+        if user_name is not None:
             # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
-            comment = comment[0]
+            user_name = user_name[0]
             # "りんご" ○   ("りんご",) ☓
             # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
         else:
             return "アイテムがありません" # 指定したIDの name がなければときの対処
 
-        item = { "id":id, "comment":comment }
+        item = { "user_id":user_id, "user_name":user_name }
 
-        return render_template("edit.html", comment=item)
+        return render_template("edit.html", user_name=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select address from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if address is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            address = address[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "address":address }
+
+        return render_template("edit.html", address=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select phone from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if phone is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            phone = phone[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "phone":phone }
+
+        return render_template("edit.html", phone=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select mail from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if mail is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            mail = mail[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "mail":mail }
+
+        return render_template("edit.html", mail=item)
+
+        conn = sqlite3.connect('service.db')
+        c = conn.cursor()
+        c.execute("select password from users where user_id = ?", (user_id,) )
+        comment = c.fetchone()
+        conn.close()
+
+        if password is not None:
+            # None に対しては インデクス指定できないので None 判定した後にインデックスを指定
+            password = password[0]
+            # "りんご" ○   ("りんご",) ☓
+            # fetchone()で取り出したtupleに 0 を指定することで テキストだけをとりだす
+        else:
+            return "アイテムがありません" # 指定したIDの name がなければときの対処
+
+        item = { "user_id":user_id, "passwod":password }
+
+        return render_template("edit.html", password=password)
     else:
         return redirect("/login")
 
@@ -172,24 +251,24 @@ def update_item():
         # 既にあるデータベースのデータを送られてきたデータに更新
         conn = sqlite3.connect('service.db')
         c = conn.cursor()
-        c.execute("update bbs set comment = ? where id = ?",(comment,item_id))
+        c.execute("update users set user_name = ?, address = ?, phone =?, mail = ? where user_id = ?",(user_name,address,phone,mail,item_id))
         conn.commit()
         conn.close()
 
         # アイテム一覧へリダイレクトさせる
-        return redirect("/bbs")
+        return redirect("/my_page")
     else:
         return redirect("/login")
 
 
 @app.route('/del' ,methods=["POST"])
-def del_task():
+def del_user():
     # クッキーから user_id を取得
     id = request.form.get("comment_id")
     id = int(id)
     conn = sqlite3.connect("service.db")
     c = conn.cursor()
-    c.execute("update set bbs del_flag = 1 where id = ?", (id,))
+    c.execute("update set users user_delete= 1 where user_id = ?", (user_id,))
     conn.commit()
     c.close()
     return redirect("/my_page")
@@ -227,66 +306,30 @@ def bookdb():
     '''
 
 
-    # url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'
-    # # ブラウザから送られてきたISBNデータを受け取る
-    # isbn = request.form.get("isbn")
-    # req_url = url + isbn
-    # res = requests.get(req_url)
-    # return '登録できないよ'
-    # # response.text
-    # WebAPIのURLに引数文字列を追加
-    # url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + '9784893096609'
-    # WebAPIの呼び出し
-    # res = requests.get('https://www.googleapis.com/books/v1/volumes?q=isbn:9784893096609')
+@app.route('/cart', methods=["GET", "POST"])
+def cart():
+    #  登録ページを表示させる
+    if request.method == "GET":
+        if 'user_id' in session :
+            return render_template("cart.html")
+        else:
+            return render_template("login.html")
+    # ここからPOSTの処理
+    else:
+        name=request.form.get("name")
+        password=request.form.get("password")
+        address=request.form.get("address")
+        phone=request.form.get("phone")
+        mail=request.form.get("mail")
+        plan=request.form.get("plan")
 
-    # title = res.items[0].volumeInfo.title
-    # author = res.items[0].volumeInfo.authors[0]
-    # year = res.items[0].volumeInfo.publishedDate
-    # synopsis = res.items[0].volumeInfo.description
-    # book_photo = res.items[0].volumeInfo.imageLinks.smallThumbnail
-    # pages = res.items[0].volumeInfo.pageCount
-    # isbn = res.items[0].volumeInfo.industryIdentifiers[1].identifier
-    # genre = res.items[0].volumeInfo.categories
+        conn = sqlite3.connect("bookshare.db")
+        c = conn.cursor()
+        c.execute("insert into users values(null, ?, ?, ?, ?, ?, ?)",(name, password, address, phone, mail, plan))
+        conn.commit()
+        conn.close()
+        return redirect('/cart')
 
-    # DBにデータを追加する
-    # conn = sqlite3.connect('bookshare.db')
-    # c = conn.cursor()
-    # c.execute("insert into items values(null,?,?,?,?,?,?,?,?)", (title, author, year, synopsis, isbn, book_photo, genre, pages, ) )
-    # conn.commit()
-    # conn.close()
-    # return '登録できないよ'
-
-
-# 図書検索機能まだできてないよ
-# # GET  /search => 検索画面を表示
-# # POST /search => 検索処理をする
-# @app.route("/titlesearch", methods=["POST"])
-# def search():
-#     # ブラウザから送られてきた検索キーワードを受け取る
-#     name = request.form.get("keyword")
-
-#     # ブラウザから送られてきた keywordと itemsテーブルに一致するレコードが
-#     # 存在するかを判定する。レコードが存在したら
-#     # 本の情報を表示させたい
-#     conn = sqlite3.connect('bookshare.db')
-#     c = conn.cursor()
-#     # 検索キーワードが本のタイトルと部分一致したらカラム全部取り出してみる
-#     c.execute("select * from items where title like ?", ('%'+keyword+'%',) )
-
-#     # この下からはまだ
-#     # 
-
-#     user_id = c.fetchall()
-#     conn.close()
-#     # # DBから取得してきたuser_id、ここの時点ではタプル型
-#     # print(type(user_id))
-#     # # user_id が NULL(PythonではNone)じゃなければログイン成功
-#     # if user_id is None:
-    #     # ログイン失敗すると、ログイン画面に戻す
-    #     return render_template("login.html")
-    # else:
-    #     session['user_id'] = user_id[0]
-    #     return redirect("/bbs")
 
 
 @app.errorhandler(403)
@@ -303,3 +346,4 @@ def notfound404(code):
 if __name__ == "__main__":
     # Flask が持っている開発用サーバーを、実行します。
     app.run(debug = True)
+  

@@ -1,14 +1,26 @@
-{% extends 'base.html' %}
 
+
+{% extends 'base.html' %}
 {% block content %}
+
 
 <div>
 
-<form action="/register" method="post">
-  名前：<input type="text" name="name"><br>
-  パスワード：<input type="password" name="password"><br>
-  <input type="submit" name="save" value="登録">
-</form>
+  <form action="/register" method="POST">
+    <input type="hidden" name="user_id"><br>
+    名前：<input type="text" name="user_name"><br>
+    かな：<input type="text" name="user_name_kana"><br>
+    住所：<input type="text" name="address"><br>
+    電話番号：<input type="text" name="phone"><br>
+    email address：<input type="text" name="mail"><br>
+    パスワード：<input type="password" name="password"><br>
+    プランの選択：<select name="plan" id="">
+      <option value="basic">basic</option>
+      <option value="standard">standard</option>
+      <option value="premium">premium</option>
+    </select>
+    <input type="submit" name="save" value="登録">
+  </form>
 
 <a href="/login">登録されている方はこちら</a>
 
