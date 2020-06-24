@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Manjate</title>
+   <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+   <div class="eyecatch3">
+       <div class="cp_cont">
+           <div class="cp_offcm01">
+               <input type="checkbox" id="cp_toggle01">
+               <label for="cp_toggle01"><span><img src="images/メニューのフリーアイコン19.png" alt="" class="humburger-menu"></span></label>
+               <div class="cp_menu">
+               <ul>
+                   <li><a href="home.html">home</a></li>
+                   <li><a href="search.html">search</a></li>
+                   <li><a href="categories.html">categories</a></li>
+                   <li><a href="upload.html">upload</a></li>
+                   <li><a href="signin.html">signup</a></li>
+                   <li><a href="login.html">login</a></li>
+                   <li><a href="about.html">about</a></li>
+               </ul>
+               </div>
+           </div>
+           <div class="cp_contents">
+               <h1>Manjate</h1>
+           </div>
+       </div>
+       <div class="search2">
+           <p>🔍</p>
+           <input type="text" placeholder="search...">
+       </div>
+       <div class="categories">
+           <div class="category">
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+               <div class="category-item">
+                   <p>category</p>
+               </div>
+           </div>
+   </div>
+</div>
+</body>
+</html>
+{% endblock %}
